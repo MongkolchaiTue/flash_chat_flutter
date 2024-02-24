@@ -1,3 +1,10 @@
+# firebase api key
+firebase_app_id_file.json
+firebase_options.dart
+Google-services.json
+Googleservice-info.plist
+Podfile
+Podfile.lock
 # Miscellaneous
 *.class
 *.log
