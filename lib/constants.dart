@@ -41,7 +41,6 @@ const kTextFieldDecoration = InputDecoration(
 Future<FirebaseAuth> initializeChatApp() async {
   late final FirebaseApp _app;
   late final FirebaseAuth _auth;
-
   try {
     _app = await Firebase.initializeApp(
       name: DefaultFirebaseOptions.currentPlatform.projectId,
