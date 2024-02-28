@@ -17,6 +17,12 @@ class _LoginScreenState extends State<LoginScreen> {
   String email = '';
   String password = '';
 
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsFlutterBinding.ensureInitialized();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,14 +88,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     showSpinner = true;
                   });
 
-                  late final FirebaseAuth _auth;
                   late final dynamic _user;
                   try {
-                    _auth = await initializeChatApp();
-                    if (_auth.currentUser != null) {
-                      _user = _auth.currentUser;
+                    if (kAppFbAuth.currentUser != null) {
+                      _user = kAppFbAuth.currentUser;
                     } else {
-                      _user = await _auth.signInWithEmailAndPassword(email: email, password: password);
+                      _user = await kAppFbAuth.signInWithEmailAndPassword(email: email, password: password);
                     }
                     if (_user != null) {
                       Navigator.pushNamed(context, ChatScreen.id);

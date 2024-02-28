@@ -19,6 +19,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String password = '';
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsFlutterBinding.ensureInitialized();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -82,14 +88,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     showSpinner = true;
                   });
 
-                  late final FirebaseAuth _auth;
                   late final dynamic _newUser;
                   try {
-                    _auth = await initializeChatApp();
-                    if (_auth.currentUser != null) {
-                      _newUser = _auth.currentUser;
+                    if (kAppFbAuth.currentUser != null) {
+                      _newUser = kAppFbAuth.currentUser;
                     } else {
-                      _newUser = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+                      _newUser = await kAppFbAuth.createUserWithEmailAndPassword(email: email, password: password);
                     }
                     if (_newUser != null) {
                       Navigator.pushNamed(context, ChatScreen.id);

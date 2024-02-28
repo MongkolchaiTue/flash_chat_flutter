@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flash_chat/screens/welcome_screen.dart';
 import 'package:flash_chat/constants.dart';
 
-void main()  {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await iniAppFirebase();
+
   runApp(FlashChat());
 }
 

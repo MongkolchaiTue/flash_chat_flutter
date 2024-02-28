@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flash_chat/constants.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -11,19 +9,17 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  late final FirebaseFirestore _firestore;
-  late final FirebaseAuth _auth;
   dynamic loggedInUser;
   String email = '';
   String messageText = '';
 
-  void getCurrentUser() async {
+  void getCurrentUser() {
       try {
-        _auth = await initializeChatApp();
-        _firestore = await FirebaseFirestore.instanceFor(app: _auth.app);
-        if (_auth.currentUser != null) {
-          loggedInUser = _auth.currentUser;
+        if (kAppFbAuth.currentUser != null) {
+          loggedInUser = kAppFbAuth.currentUser;
           email = loggedInUser.email;
+        } else {
+          throw('FirebaseAuth currentUser is null');
         }
       } catch (e) {
         print(e);
@@ -31,14 +27,14 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   getMessages() async {
-    final messages = await _firestore.collection('messages').get();
+    final messages = await kAppFbStore.collection('messages').get();
     for (var message in messages.docs) {
       print(message.data());
     }
   }
 
   void messagesStream() async {
-    await for ( var snapshots in await _firestore.collection('messages').snapshots()) {
+    await for ( var snapshots in await kAppFbStore.collection('messages').snapshots()) {
       for (var message in snapshots.docs) {
         print(message.data());
       }
@@ -47,12 +43,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
-    getCurrentUser();
-
     super.initState();
+
+    WidgetsFlutterBinding.ensureInitialized();
+    getCurrentUser();
   }
+
   @override
   Widget build(BuildContext context) {
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -64,7 +64,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 //Implement logout functionality
                 // getMessages();
                 messagesStream();
-                _auth.signOut();
+                kAppFbAuth.signOut();
+                // _firestore.terminate();
                 Navigator.pop(context);
               }),
         ],
@@ -76,6 +77,33 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            // StreamBuilder<QuerySnapshot>(
+            // stream: FirebaseFirestore.instance.collection('messages').snapshots(),
+            //   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            //     if (snapshot.hasError) {
+            //       return const Text('Something went wrong');
+            //     }
+            //
+            //     if (snapshot.connectionState == ConnectionState.waiting) {
+            //       return const Text("Loading");
+            //     }
+            //
+            //     return ListView(
+            //       children: snapshot.data!.docs
+            //           .map((DocumentSnapshot document) {
+            //         Map<String, dynamic> data =
+            //         document.data()! as Map<String, dynamic>;
+            //         return ListTile(
+            //           title: Text(data['sender']),
+            //           subtitle: Text(data['text']),
+            //         );
+            //       })
+            //       .toList()
+            //       .cast(),
+            //     );
+            //   },
+            // ),
+
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -95,7 +123,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       //Implement send functionality.
                       //messageText + loggedInUser.email
 
-                      _firestore.collection('messages').add({
+                      kAppFbStore.collection('messages').add({
                         'text': messageText,
                         'sender':email,
                       });

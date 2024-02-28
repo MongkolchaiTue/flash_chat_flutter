@@ -2,6 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flash_chat/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+const String kAppName = DefaultFirebaseOptions.appName;
+late final FirebaseApp kAppFb;
+late final FirebaseAuth kAppFbAuth;
+late final FirebaseFirestore kAppFbStore;
+Future<void> iniAppFirebase() async {
+    try {
+      kAppFb = await Firebase.initializeApp(
+        // name: DefaultFirebaseOptions.currentPlatform.projectId,
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      print(kAppFb);
+
+      kAppFbAuth = FirebaseAuth.instanceFor(app: kAppFb);
+      print(kAppFbAuth);
+
+      kAppFbStore = FirebaseFirestore.instanceFor(app: kAppFb);
+      print(kAppFbStore);
+    } catch (e) {
+      throw(e);
+    }
+}
 
 const kSendButtonTextStyle = TextStyle(
   color: Colors.lightBlueAccent,
@@ -37,19 +60,3 @@ const kTextFieldDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
 );
-
-Future<FirebaseAuth> initializeChatApp() async {
-  late final FirebaseApp _app;
-  late final FirebaseAuth _auth;
-  try {
-    _app = await Firebase.initializeApp(
-      name: DefaultFirebaseOptions.currentPlatform.projectId,
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    _auth = await FirebaseAuth.instanceFor(app: _app);
-    return _auth;
-
-  } catch (e) {
-    throw(e);
-  }
-}
