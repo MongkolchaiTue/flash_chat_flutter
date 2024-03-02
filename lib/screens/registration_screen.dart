@@ -19,12 +19,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String password = '';
 
   @override
-  void initState() {
-    super.initState();
-
-    WidgetsFlutterBinding.ensureInitialized();
-  }
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,

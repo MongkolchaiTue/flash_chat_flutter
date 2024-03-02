@@ -18,13 +18,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String password = '';
 
   @override
-  void initState() {
-    super.initState();
-
-    WidgetsFlutterBinding.ensureInitialized();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
